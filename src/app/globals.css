@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+@theme {
+  /* Aviation color palette */
+  --color-surface-container-low: #f2f4f7;
+  --color-tertiary: #006876;
+  --color-secondary: #506169;
+  --color-outline: #867465;
+  --color-surface-container-highest: #e0e3e6;
+  --color-on-secondary-fixed-variant: #394951;
+  --color-on-primary-fixed-variant: #6c3a00;
+  --color-error: #ba1a1a;
+  --color-tertiary-fixed: #a1efff;
+  --color-surface-variant: #e0e3e6;
+  --color-secondary-fixed: #d4e5ef;
+  --color-primary: #8e4f00;
+  --color-on-secondary-fixed: #0d1e25;
+  --color-background: #f7f9fc;
+  --color-outline-variant: #d9c2b2;
+  --color-on-error-container: #93000a;
+  --color-tertiary-container: #1bc2da;
+  --color-on-secondary-container: #55656d;
+  --color-on-error: #ffffff;
+  --color-on-tertiary-fixed: #001f25;
+  --color-secondary-fixed-dim: #b8c9d3;
+  --color-primary-fixed-dim: #ffb878;
+  --color-primary-fixed: #ffdcc1;
+  --color-on-surface-variant: #534437;
+  --color-surface-container: #eceef1;
+  --color-tertiary-fixed-dim: #44d8f1;
+  --color-surface-tint: #8e4f00;
+  --color-surface-bright: #f7f9fc;
+  --color-on-tertiary-fixed-variant: #004e59;
+  --color-surface: #f7f9fc;
+  --color-secondary-container: #d1e2ec;
+  --color-on-tertiary-container: #004b56;
+  --color-on-background: #191c1e;
+  --color-inverse-surface: #2d3133;
+  --color-on-secondary: #ffffff;
+  --color-on-primary-container: #673800;
+  --color-surface-container-lowest: #ffffff;
+  --color-primary-container: #f49d48;
+  --color-on-primary: #ffffff;
+  --color-inverse-on-surface: #eff1f4;
+  --color-surface-dim: #d8dadd;
+  --color-on-surface: #191c1e;
+  --color-inverse-primary: #ffb878;
+  --color-on-tertiary: #ffffff;
+  --color-surface-container-high: #e6e8eb;
+  --color-error-container: #ffdad6;
+  --color-on-primary-fixed: #2e1500;
+
+  /* Font families */
+  --font-headline: "Manrope", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-label: "Inter", sans-serif;
+}
+
+/* Material Symbols config */
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+/* Aviation gradient utility */
+.aviation-gradient {
+  background: linear-gradient(135deg, #8e4f00 0%, #f49d48 100%);
+}
+
+/* Range input styling */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #8e4f00;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 0 0 1px #8e4f00;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #d9c2b2;
+  height: 4px;
+  border-radius: 2px;
+}
+
+/* Selection colors */
+::selection {
+  background-color: #f49d48;
+  color: #673800;
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d9c2b2;
+  border-radius: 3px;
+}
