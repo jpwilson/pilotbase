@@ -5,6 +5,7 @@ import { Header } from "@/components/layout/header";
 import type { SuggestionType, SuggestionStatus } from "@/lib/supabase/types";
 import type { SuggestionRow } from "@/lib/engine/suggestions";
 import { cn } from "@/lib/utils/cn";
+import { DEMO_SUGGESTIONS } from "@/lib/demo-data";
 
 type Suggestion = SuggestionRow;
 
@@ -85,9 +86,25 @@ export default function QueuePage() {
       if (activeType !== "all") params.set("type", activeType);
       const res = await fetch(`/api/suggestions?${params}`);
       const { data } = await res.json();
-      setSuggestions(data || []);
+      // Use demo data as fallback when API returns empty
+      let results: Suggestion[] = data || [];
+      if (results.length === 0) {
+        results = DEMO_SUGGESTIONS.filter((s) => {
+          if (activeStatus !== "all" && s.status !== activeStatus) return false;
+          if (activeType !== "all" && s.type !== activeType) return false;
+          return true;
+        });
+      }
+      setSuggestions(results);
     } catch {
-      console.error("Failed to fetch suggestions");
+      // Fallback to demo data on error
+      setSuggestions(
+        DEMO_SUGGESTIONS.filter((s) => {
+          if (activeStatus !== "all" && s.status !== activeStatus) return false;
+          if (activeType !== "all" && s.type !== activeType) return false;
+          return true;
+        })
+      );
     } finally {
       setIsLoading(false);
     }

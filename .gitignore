@@ -38,3 +38,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+jp_gauntlet_proj_basics.md

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Header } from "@/components/layout/header";
 import type { AuditLogRow } from "@/lib/engine/audit";
 import { cn } from "@/lib/utils/cn";
+import { DEMO_ACTIVITY } from "@/lib/demo-data";
 
 type AuditLogEntry = AuditLogRow;
 
@@ -84,7 +85,10 @@ export default function ActivityPage() {
       try {
         const res = await fetch("/api/activity?limit=100");
         const { data } = await res.json();
-        setEvents(data || []);
+        const results = data && data.length > 0 ? data : DEMO_ACTIVITY;
+        setEvents(results);
+      } catch {
+        setEvents(DEMO_ACTIVITY);
       } finally {
         setIsLoading(false);
       }
@@ -171,7 +175,14 @@ export default function ActivityPage() {
                               {conf.label}
                             </p>
                             <h5 className="text-base font-bold text-on-surface">
-                              {event.entity_type} {event.entity_id?.slice(0, 8)}
+                              {(event.payload?.student as string) ||
+                                (event.payload?.recipient as string) ||
+                                `${event.entity_type} ${event.entity_id?.slice(0, 8)}`}
+                              {event.payload?.type ? (
+                                <span className="ml-2 text-xs font-medium text-on-surface-variant">
+                                  {String(event.payload.type)}
+                                </span>
+                              ) : null}
                             </h5>
                           </div>
                           <div className="col-span-3">
