@@ -67,8 +67,8 @@ const config: EngineConfig = {
   },
 };
 
-function makeMockFSP(overrides: Partial<typeof defaultFSP> = {}): FSP {
-  const defaultFSP = {
+function makeMockFSP(): FSP {
+  return {
     training: {
       getSchedulableEvents: vi.fn().mockResolvedValue([mockEvent]),
       getEnrollmentProgress: vi.fn().mockResolvedValue(null),
@@ -81,8 +81,7 @@ function makeMockFSP(overrides: Partial<typeof defaultFSP> = {}): FSP {
       listInstructors: vi.fn().mockResolvedValue([]),
       listAircraft: vi.fn().mockResolvedValue([]),
     },
-  };
-  return { ...defaultFSP, ...overrides } as unknown as FSP;
+  } as unknown as FSP;
 }
 
 describe("WaitlistEngine", () => {
