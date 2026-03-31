@@ -17,16 +17,13 @@ export class FSPTrainingService {
     priorities?: unknown[];
     useAllInstructors?: boolean;
   }): Promise<FSPSchedulableEvent[]> {
-    return this.client.post(
-      `/traininghub/v1.0/operators/${this.opId}/schedulableEvents`,
-      {
-        listType: 1,
-        filters: [],
-        priorities: [],
-        useAllInstructors: false,
-        ...request,
-      }
-    );
+    return this.client.post(`/traininghub/v1.0/operators/${this.opId}/schedulableEvents`, {
+      listType: 1,
+      filters: [],
+      priorities: [],
+      useAllInstructors: false,
+      ...request,
+    });
   }
 
   async getStudentEnrollments(studentId: string): Promise<FSPEnrollment[]> {
@@ -36,9 +33,7 @@ export class FSPTrainingService {
   }
 
   async getEnrollmentDetails(enrollmentId: string): Promise<FSPEnrollment> {
-    return this.client.get(
-      `/traininghub/v1.0/operators/${this.opId}/enrollments/${enrollmentId}`
-    );
+    return this.client.get(`/traininghub/v1.0/operators/${this.opId}/enrollments/${enrollmentId}`);
   }
 
   async getEnrollmentProgress(enrollmentId: string): Promise<FSPEnrollmentProgress> {
@@ -59,10 +54,7 @@ export class FSPTrainingService {
     return this.client.get(`/traininghub/v1.0/operators/${this.opId}/alerts`);
   }
 
-  async getTrainingSessions(params: {
-    enrollmentId: string;
-    studentId: string;
-  }): Promise<unknown> {
+  async getTrainingSessions(params: { enrollmentId: string; studentId: string }): Promise<unknown> {
     return this.client.get("/api/v1/trainingsessions", {
       enrollmentId: params.enrollmentId,
       operatorId: this.opId,

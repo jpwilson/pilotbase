@@ -36,14 +36,16 @@ export class OperatorConfigService {
     return data as OperatorConfigRow;
   }
 
-  async update(updates: Partial<{
-    priority_weights: PriorityWeights;
-    search_window_days: number;
-    max_alternatives: number;
-    notification_prefs: { email: boolean; sms: boolean };
-    templates: Record<string, unknown>;
-    feature_flags: FeatureFlags;
-  }>): Promise<OperatorConfigRow> {
+  async update(
+    updates: Partial<{
+      priority_weights: PriorityWeights;
+      search_window_days: number;
+      max_alternatives: number;
+      notification_prefs: { email: boolean; sms: boolean };
+      templates: Record<string, unknown>;
+      feature_flags: FeatureFlags;
+    }>
+  ): Promise<OperatorConfigRow> {
     const { data, error } = await this.db
       .from("operator_config")
       .update(updates)

@@ -13,9 +13,7 @@ export function getSupabaseServerClient(operatorId?: string): SupabaseClient {
       schema: "public",
     },
     global: {
-      headers: operatorId
-        ? { "x-operator-id": operatorId }
-        : {},
+      headers: operatorId ? { "x-operator-id": operatorId } : {},
     },
   });
 

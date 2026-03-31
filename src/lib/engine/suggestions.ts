@@ -167,7 +167,8 @@ export class SuggestionService {
 
     if (options?.type) query = query.eq("type", options.type);
     if (options?.limit) query = query.limit(options.limit);
-    if (options?.offset) query = query.range(options.offset, options.offset + (options.limit ?? 50) - 1);
+    if (options?.offset)
+      query = query.range(options.offset, options.offset + (options.limit ?? 50) - 1);
 
     const { data, error } = await query;
     if (error) throw error;

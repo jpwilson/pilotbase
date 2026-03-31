@@ -117,9 +117,8 @@ export function SuggestionCard({
                 const alt = rawAlt as Record<string, unknown>;
                 return (
                   <div key={i} className="text-xs text-gray-600">
-                    <span className="font-medium">Option {i + 1}:</span>{" "}
-                    {String(alt.start ?? "")} &mdash; {String(alt.instructorName ?? "")} /{" "}
-                    {String(alt.aircraftName ?? "")}
+                    <span className="font-medium">Option {i + 1}:</span> {String(alt.start ?? "")}{" "}
+                    &mdash; {String(alt.instructorName ?? "")} / {String(alt.aircraftName ?? "")}
                     {alt.rationale ? (
                       <span className="ml-1 text-gray-400">({String(alt.rationale)})</span>
                     ) : null}

@@ -64,7 +64,9 @@ export class DiscoveryEngine {
 
     // 4. Filter to daylight-only slots
     // Discovery flights are always during daylight hours
-    const daylightSlots = Array.isArray(slots) ? slots.filter((s) => s.isWithinDaylight !== false) : [];
+    const daylightSlots = Array.isArray(slots)
+      ? slots.filter((s) => s.isWithinDaylight !== false)
+      : [];
 
     if (daylightSlots.length === 0) {
       logger.info("No daylight slots found for discovery flight");
@@ -87,7 +89,11 @@ export class DiscoveryEngine {
 
     // 6. Create suggestion
     const bestSlot = alternatives[0];
-    const constraintsChecked = ["daylight hours", "instructor availability", "aircraft availability"];
+    const constraintsChecked = [
+      "daylight hours",
+      "instructor availability",
+      "aircraft availability",
+    ];
 
     const rationale = generateRationale({
       type: "discovery",

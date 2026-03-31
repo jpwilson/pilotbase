@@ -32,7 +32,8 @@ export const DEMO_SUGGESTIONS: SuggestionRow[] = [
     proposed_start: hoursFromNow(18),
     proposed_end: hoursFromNow(20),
     alternatives: [],
-    rationale: "Best match for availability — solo nav slot opened, Sterling is #1 on waitlist with 3 days since last flight.",
+    rationale:
+      "Best match for availability — solo nav slot opened, Sterling is #1 on waitlist with 3 days since last flight.",
     context: { stage: "PPL Stage 2", lesson: "Solo Navigation" },
     trigger_event: { type: "slot_opened", source: "maintenance_delay" },
     reviewed_by: null,
@@ -59,7 +60,8 @@ export const DEMO_SUGGESTIONS: SuggestionRow[] = [
     proposed_start: hoursFromNow(4),
     proposed_end: hoursFromNow(5.5),
     alternatives: [],
-    rationale: "Replaces cancelled slot for N811TS. Maintains 48-hour proficiency window for instrument approach practice.",
+    rationale:
+      "Replaces cancelled slot for N811TS. Maintains 48-hour proficiency window for instrument approach practice.",
     context: { program: "Instrument Rating", cancellation_reason: "Instructor sick" },
     trigger_event: { type: "cancellation", original_time: hoursFromNow(2) },
     reviewed_by: null,
@@ -86,7 +88,8 @@ export const DEMO_SUGGESTIONS: SuggestionRow[] = [
     proposed_start: hoursFromNow(26),
     proposed_end: hoursFromNow(29),
     alternatives: [],
-    rationale: "Completes cross-country requirement while weather window is optimal. Kim finished solo patterns yesterday.",
+    rationale:
+      "Completes cross-country requirement while weather window is optimal. Kim finished solo patterns yesterday.",
     context: { program: "Commercial Pilot", next_event: "XC Dual" },
     trigger_event: { type: "lesson_completed", completed_lesson: "Solo Patterns" },
     reviewed_by: null,
@@ -113,7 +116,8 @@ export const DEMO_SUGGESTIONS: SuggestionRow[] = [
     proposed_start: hoursFromNow(48),
     proposed_end: hoursFromNow(49),
     alternatives: [],
-    rationale: "Daylight-constrained intro flight. Saturday morning slot has best weather forecast and aircraft availability.",
+    rationale:
+      "Daylight-constrained intro flight. Saturday morning slot has best weather forecast and aircraft availability.",
     context: { prospect_email: "sarah.chen@email.com", type: "Intro Session" },
     trigger_event: { type: "discovery_request" },
     reviewed_by: null,

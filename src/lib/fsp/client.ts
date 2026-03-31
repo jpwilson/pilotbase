@@ -92,7 +92,11 @@ export class FSPClient {
         status: response.status,
         body: errorBody,
       });
-      throw new FSPApiError(`FSP API error: ${response.status} ${path}`, response.status, errorBody);
+      throw new FSPApiError(
+        `FSP API error: ${response.status} ${path}`,
+        response.status,
+        errorBody
+      );
     }
 
     const text = await response.text();

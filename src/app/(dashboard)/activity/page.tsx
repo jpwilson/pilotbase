@@ -10,7 +10,14 @@ type AuditLogEntry = AuditLogRow;
 
 const EVENT_CONFIG: Record<
   string,
-  { label: string; icon: string; iconBg: string; iconColor: string; statusLabel: string; statusClass: string }
+  {
+    label: string;
+    icon: string;
+    iconBg: string;
+    iconColor: string;
+    statusLabel: string;
+    statusClass: string;
+  }
 > = {
   suggestion_created: {
     label: "Suggestion Created",
@@ -66,8 +73,7 @@ function groupByDate(events: AuditLogEntry[]): { label: string; entries: AuditLo
     let label: string;
     if (d.toDateString() === today.toDateString()) label = "Today";
     else if (d.toDateString() === yesterday.toDateString()) label = "Yesterday";
-    else
-      label = d.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" });
+    else label = d.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" });
 
     if (!groups[label]) groups[label] = [];
     groups[label].push(event);
@@ -143,18 +149,24 @@ export default function ActivityPage() {
             {dateGroups.map((group, gi) => (
               <section key={group.label}>
                 <div className="mb-6 flex items-center gap-4">
-                  <h4 className={cn(
-                    "text-sm font-bold uppercase tracking-widest",
-                    gi === 0 ? "text-primary" : "text-on-surface-variant"
-                  )}>
+                  <h4
+                    className={cn(
+                      "text-sm font-bold uppercase tracking-widest",
+                      gi === 0 ? "text-primary" : "text-on-surface-variant"
+                    )}
+                  >
                     {group.label}
                   </h4>
                   <div className="h-px flex-grow bg-gradient-to-r from-outline-variant/50 to-transparent" />
                 </div>
-                <div className={cn("space-y-4", gi > 0 && "opacity-80 hover:opacity-100 transition-opacity")}>
+                <div
+                  className={cn(
+                    "space-y-4",
+                    gi > 0 && "opacity-80 hover:opacity-100 transition-opacity"
+                  )}
+                >
                   {group.entries.map((event) => {
-                    const conf =
-                      EVENT_CONFIG[event.event_type] || EVENT_CONFIG.suggestion_created;
+                    const conf = EVENT_CONFIG[event.event_type] || EVENT_CONFIG.suggestion_created;
                     return (
                       <div
                         key={event.id}

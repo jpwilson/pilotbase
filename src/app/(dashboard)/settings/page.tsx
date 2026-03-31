@@ -126,8 +126,8 @@ export default function SettingsPage() {
               Scheduling Agent Configuration
             </h3>
             <p className="max-w-2xl leading-relaxed text-on-surface-variant">
-              Adjust the core logic of the PilotBase AI. These weights and windows define how flights
-              are auto-assigned and prioritized across the fleet.
+              Adjust the core logic of the PilotBase AI. These weights and windows define how
+              flights are auto-assigned and prioritized across the fleet.
             </p>
           </div>
 
@@ -142,9 +142,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="space-y-10">
                   {WEIGHT_SLIDERS.map((slider) => {
-                    const value = Math.round(
-                      (config.priority_weights[slider.key] ?? 0) * 100
-                    );
+                    const value = Math.round((config.priority_weights[slider.key] ?? 0) * 100);
                     return (
                       <div key={slider.key} className="group">
                         <div className="mb-4 flex items-center justify-between">

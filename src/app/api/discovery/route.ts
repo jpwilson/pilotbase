@@ -22,7 +22,10 @@ export async function POST(request: NextRequest) {
     const parsed = discoveryRequestSchema.safeParse(body);
 
     if (!parsed.success) {
-      return NextResponse.json({ error: "Invalid request", details: parsed.error.issues }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid request", details: parsed.error.issues },
+        { status: 400 }
+      );
     }
 
     const db = getSupabaseServerClient(user.operatorId);

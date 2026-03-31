@@ -13,9 +13,10 @@ export async function GET(request: NextRequest) {
     const type = searchParams.get("type") as SuggestionType | null;
     const limit = searchParams.get("limit") ? parseInt(searchParams.get("limit")!) : 50;
 
-    const suggestions = status === "pending"
-      ? await service.listPending({ type: type ?? undefined, limit })
-      : await service.listAll({ status: status ?? undefined, type: type ?? undefined, limit });
+    const suggestions =
+      status === "pending"
+        ? await service.listPending({ type: type ?? undefined, limit })
+        : await service.listAll({ status: status ?? undefined, type: type ?? undefined, limit });
 
     return NextResponse.json({ data: suggestions });
   } catch (error) {

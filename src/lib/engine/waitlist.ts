@@ -1,5 +1,10 @@
 import type { FSP } from "@/lib/fsp";
-import type { EngineConfig, CreateSuggestionInput, OpeningTrigger, CancellationTrigger } from "./types";
+import type {
+  EngineConfig,
+  CreateSuggestionInput,
+  OpeningTrigger,
+  CancellationTrigger,
+} from "./types";
 import { rankCandidates } from "./ranker";
 
 import { generateRationale } from "./explainer";
@@ -52,9 +57,7 @@ export class WaitlistEngine {
     const availabilityMap = new Map(availabilities.map((a) => [a.userGuidId, a]));
 
     // 3. Get civil twilight for daylight constraints
-    const civilTwilight = await this.fsp.weather.getCivilTwilight(
-      String(this.config.locationId)
-    );
+    const civilTwilight = await this.fsp.weather.getCivilTwilight(String(this.config.locationId));
 
     // 4. Build candidate list with scoring data
     const candidates: StudentCandidate[] = schedulableEvents.map((event, index) => ({

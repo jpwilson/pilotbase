@@ -1,4 +1,9 @@
-import type { FSPUserAvailability, FSPSchedulableEvent, FSPCivilTwilight, TimeOfDay } from "@/lib/fsp/types";
+import type {
+  FSPUserAvailability,
+  FSPSchedulableEvent,
+  FSPCivilTwilight,
+  TimeOfDay,
+} from "@/lib/fsp/types";
 import { isWithinDaylightHours } from "@/lib/utils/dates";
 
 export interface ConstraintResult {
@@ -105,10 +110,7 @@ function formatTimeOnly(isoDate: string): string {
 /**
  * Check if an aircraft is compatible with a schedulable event.
  */
-export function isAircraftCompatible(
-  aircraftId: string,
-  event: FSPSchedulableEvent
-): boolean {
+export function isAircraftCompatible(aircraftId: string, event: FSPSchedulableEvent): boolean {
   // If event specifies aircraft, check direct match
   if (event.aircraftIds.length > 0) {
     return event.aircraftIds.includes(aircraftId);
@@ -120,10 +122,7 @@ export function isAircraftCompatible(
 /**
  * Check if an instructor is compatible with a schedulable event.
  */
-export function isInstructorCompatible(
-  instructorId: string,
-  event: FSPSchedulableEvent
-): boolean {
+export function isInstructorCompatible(instructorId: string, event: FSPSchedulableEvent): boolean {
   if (!event.instructorRequired) return true;
   if (event.instructorIds.length === 0) return true; // Any instructor
   return event.instructorIds.includes(instructorId);

@@ -4,10 +4,7 @@ import { SuggestionService } from "@/lib/engine/suggestions";
 import { FSP } from "@/lib/fsp";
 import { logger } from "@/lib/utils/logger";
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = requireAuth(request);
     const { id } = await params;
@@ -73,10 +70,7 @@ export async function POST(
         error: String(fspError),
       });
       await service.markFailed(id, String(fspError));
-      return NextResponse.json(
-        { error: "Failed to create reservation in FSP" },
-        { status: 502 }
-      );
+      return NextResponse.json({ error: "Failed to create reservation in FSP" }, { status: 502 });
     }
   } catch (error) {
     if (error instanceof Error && error.name === "AuthError") {
