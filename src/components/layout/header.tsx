@@ -9,7 +9,7 @@ interface HeaderProps {
 
 export function Header({ title, subtitle, badge, actions }: HeaderProps) {
   return (
-    <header className="flex h-16 items-center justify-between border-b border-slate-200/20 bg-slate-50/80 px-8 backdrop-blur-md sticky top-0 z-40">
+    <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-8 sticky top-0 z-40 shadow-sm">
       <div className="flex items-center gap-4">
         <h2 className="text-xl font-black text-slate-900 font-headline">{title}</h2>
         {badge && (

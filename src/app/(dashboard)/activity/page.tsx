@@ -210,7 +210,11 @@ export default function ActivityPage() {
                           <div className="col-span-3">
                             <p className="mb-0.5 text-xs text-on-surface-variant">Actor</p>
                             <p className="text-sm font-medium text-on-surface">
-                              {event.actor_type || "System"}
+                              {event.actor_id
+                                ? event.actor_id
+                                : event.actor_type
+                                  ? event.actor_type.charAt(0).toUpperCase() + event.actor_type.slice(1)
+                                  : "System"}
                             </p>
                           </div>
                           <div className="col-span-2 flex justify-end">

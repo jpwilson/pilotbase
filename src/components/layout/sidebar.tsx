@@ -25,7 +25,7 @@ export function Sidebar() {
   const displayRole = currentRole === "student" ? "PPL Student" : "Chief Instructor";
 
   return (
-    <aside className="fixed left-0 top-0 flex h-screen w-64 flex-col border-r border-slate-200/20 bg-slate-50/80 p-4 backdrop-blur-md z-50">
+    <aside className="fixed left-0 top-0 flex h-screen w-64 flex-col bg-slate-900 p-4 z-50">
       <div className="mb-10 flex items-center gap-3 px-2">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg aviation-gradient shadow-lg">
           <span
@@ -36,10 +36,10 @@ export function Sidebar() {
           </span>
         </div>
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 font-headline">
+          <h1 className="text-2xl font-extrabold tracking-tight text-white font-headline">
             PilotBase
           </h1>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
             Flight Operations
           </p>
         </div>
@@ -55,8 +55,8 @@ export function Sidebar() {
               className={cn(
                 "flex items-center gap-3 rounded-lg px-4 py-3 transition-all duration-200",
                 isActive
-                  ? "scale-95 bg-orange-50/50 font-bold text-orange-600"
-                  : "text-slate-500 hover:bg-slate-200/50 hover:text-slate-900"
+                  ? "bg-orange-500/15 text-orange-400 border-l-2 border-orange-400"
+                  : "text-slate-400 hover:bg-slate-800 hover:text-white border-l-2 border-transparent"
               )}
             >
               <span
@@ -73,17 +73,17 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-auto border-t border-slate-200/20 pt-6">
+      <div className="mt-auto border-t border-slate-700 pt-6">
         <div className="flex items-center gap-3 px-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-container-highest text-primary font-headline font-bold text-sm">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full aviation-gradient font-headline font-bold text-sm text-white shadow-md">
             {displayName
               .split(" ")
               .map((n) => n[0])
               .join("")}
           </div>
           <div className="overflow-hidden">
-            <p className="truncate text-sm font-bold">{displayName}</p>
-            <p className="truncate text-xs text-on-surface-variant">{displayRole}</p>
+            <p className="truncate text-sm font-bold text-white">{displayName}</p>
+            <p className="truncate text-xs text-slate-400">{displayRole}</p>
           </div>
         </div>
       </div>
