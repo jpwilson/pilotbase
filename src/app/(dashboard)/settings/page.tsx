@@ -5,6 +5,38 @@ import { Header } from "@/components/layout/header";
 import type { PriorityWeights, FeatureFlags } from "@/lib/supabase/types";
 import { cn } from "@/lib/utils/cn";
 
+const STRATEGIES = [
+  {
+    id: "weighted_priority",
+    name: "Weighted Priority",
+    description:
+      "Ranks students by configurable weights: time since last flight, enrollment progress, waitlist position.",
+    keyMetric: "Minimizes: Avg wait time",
+    default: true,
+  },
+  {
+    id: "edf",
+    name: "Earliest Deadline First",
+    description:
+      "Prioritizes students with certification deadlines approaching soonest.",
+    keyMetric: "Minimizes: Deadline misses",
+  },
+  {
+    id: "fifo",
+    name: "First In, First Out",
+    description:
+      "Students fill slots in strict waitlist order. Simple and transparent.",
+    keyMetric: "Maximizes: Fairness",
+  },
+  {
+    id: "balanced_utilization",
+    name: "Balanced Utilization",
+    description:
+      "Spreads bookings evenly across aircraft and instructors to maximize fleet efficiency.",
+    keyMetric: "Maximizes: Fleet utilization",
+  },
+];
+
 interface OperatorConfig {
   priority_weights: PriorityWeights;
   search_window_days: number;
@@ -63,6 +95,7 @@ export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
+  const [selectedStrategy, setSelectedStrategy] = useState("weighted_priority");
 
   useEffect(() => {
     async function fetchConfig() {
@@ -149,6 +182,51 @@ export default function SettingsPage() {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
             {/* Left column */}
             <div className="space-y-8 lg:col-span-8">
+              {/* Scheduling Strategy */}
+              <section className="rounded-xl bg-surface-container-lowest p-8 shadow-none">
+                <div className="mb-8 flex items-center gap-3">
+                  <span className="material-symbols-outlined text-primary">psychology</span>
+                  <h4 className="text-xl font-bold font-headline">Scheduling Strategy</h4>
+                </div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  {STRATEGIES.map((strategy) => {
+                    const isSelected = selectedStrategy === strategy.id;
+                    return (
+                      <button
+                        key={strategy.id}
+                        onClick={() => setSelectedStrategy(strategy.id)}
+                        className={cn(
+                          "relative flex flex-col items-start rounded-xl border p-5 text-left transition-all",
+                          isSelected
+                            ? "border-primary bg-primary-fixed/20 shadow-sm"
+                            : "border-outline-variant/20 bg-surface hover:bg-surface-container-low"
+                        )}
+                      >
+                        {isSelected && (
+                          <span
+                            className="material-symbols-outlined absolute right-4 top-4 text-lg text-primary"
+                            style={{ fontVariationSettings: "'FILL' 1" }}
+                          >
+                            check_circle
+                          </span>
+                        )}
+                        <p className="mb-2 pr-6 font-bold text-on-surface">{strategy.name}</p>
+                        <p className="mb-4 text-xs leading-relaxed text-on-surface-variant">
+                          {strategy.description}
+                        </p>
+                        <span className="rounded-full bg-surface-container-high px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-on-surface-variant">
+                          {strategy.keyMetric}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="mt-4 text-xs text-on-surface-variant">
+                  Strategy selection affects how the Scheduling Agent ranks and fills open slots. Run
+                  a simulation to compare strategies before changing.
+                </p>
+              </section>
+
               {/* Priority Weighting */}
               <section className="rounded-xl bg-surface-container-lowest p-8 shadow-none">
                 <div className="mb-8 flex items-center gap-3">
