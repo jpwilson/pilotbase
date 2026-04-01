@@ -181,3 +181,50 @@ export interface FeatureFlags {
   nextLesson: boolean;
   [key: string]: boolean;
 }
+
+// --- Entity types ---
+
+export interface Student {
+  id: string;
+  operator_id: string;
+  name: string;
+  initials: string;
+  email: string | null;
+  phone: string | null;
+  program: string;
+  status: 'ACTIVE' | 'ON TRACK' | 'DELAYED' | 'INACTIVE' | 'GRADUATED';
+  enrollment_progress: number;
+  total_flight_hours: number;
+  last_flight_at: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Instructor {
+  id: string;
+  operator_id: string;
+  name: string;
+  initials: string;
+  email: string | null;
+  phone: string | null;
+  instructor_type: string;
+  status: 'ACTIVE' | 'INACTIVE' | 'ON_LEAVE';
+  max_hours_per_day: number;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Aircraft {
+  id: string;
+  operator_id: string;
+  registration: string;
+  make_model: string;
+  available_hours_per_day: number;
+  status: 'AIRWORTHY' | 'IN_MAINTENANCE' | 'GROUNDED' | 'RETIRED';
+  cpl_only: boolean;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
