@@ -76,7 +76,8 @@ export default function QueuePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [activeType, setActiveType] = useState<SuggestionType | "all">("all");
-  const [activeStatus] = useState<SuggestionStatus | "all">("pending");
+  const [showHistory, setShowHistory] = useState(false);
+  const activeStatus: SuggestionStatus | "all" = showHistory ? "all" : "pending";
 
   const fetchSuggestions = useCallback(async () => {
     setIsLoading(true);
@@ -158,11 +159,32 @@ export default function QueuePage() {
               </button>
             ))}
           </div>
-          <div className="flex items-center gap-3 text-sm font-medium text-on-surface-variant">
-            <span className="material-symbols-outlined text-lg">sort</span>
-            Sort by: Newest First
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 text-sm font-medium text-on-surface-variant">
+              <span className="material-symbols-outlined text-lg">sort</span>
+              Sort by: Newest First
+            </div>
+            <button
+              onClick={() => setShowHistory(!showHistory)}
+              className={cn(
+                "flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-bold transition-colors",
+                showHistory
+                  ? "border-primary bg-primary-fixed/20 text-primary"
+                  : "border-outline-variant/30 text-on-surface-variant hover:bg-surface-container-low"
+              )}
+            >
+              <span className="material-symbols-outlined text-sm">history</span>
+              {showHistory ? "Hide History" : "Show History"}
+            </button>
           </div>
         </section>
+
+        {/* History legend */}
+        {showHistory && (
+          <p className="text-xs text-on-surface-variant -mt-8">
+            Showing all suggestions including approved, declined, and executed.
+          </p>
+        )}
 
         {/* Content */}
         {isLoading ? (
@@ -312,7 +334,12 @@ export default function QueuePage() {
               return (
                 <div
                   key={s.id}
-                  className="flex flex-col rounded-xl border border-transparent bg-surface-container-lowest p-6 shadow-sm transition-all hover:shadow-md lg:col-span-4"
+                  className={cn(
+                    "flex flex-col rounded-xl border bg-surface-container-lowest p-6 shadow-sm transition-all hover:shadow-md lg:col-span-4",
+                    isPending
+                      ? "border-transparent"
+                      : "border-dashed border-outline-variant/30 opacity-70"
+                  )}
                 >
                   <div className="mb-6 flex items-start justify-between">
                     <span
