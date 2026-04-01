@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "@/components/layout/header";
 import { cn } from "@/lib/utils/cn";
 import { STRATEGIES } from "@/lib/simulation/strategies";
@@ -257,13 +257,22 @@ function ResultsView({
   result,
   startDate,
   label,
+  playbackDay,
 }: {
   result: SimResult;
   startDate: string;
   label?: string;
+  playbackDay: number;
 }) {
   const [activeTab, setActiveTab] = useState<"events" | "conflicts">("events");
   const stats = result.stats;
+
+  const visibleEvents = result.events.filter(ev => {
+    try {
+      const day = differenceInDays(parseISO(ev.timestamp), parseISO(startDate));
+      return day <= playbackDay;
+    } catch { return true; }
+  });
 
   return (
     <div className="space-y-4">
@@ -320,7 +329,7 @@ function ResultsView({
               : "border-transparent text-on-surface-variant hover:text-on-surface"
           )}
         >
-          Event Timeline ({result.events.length})
+          Event Timeline ({visibleEvents.length} / {result.events.length})
         </button>
         <button
           onClick={() => setActiveTab("conflicts")}
@@ -342,10 +351,10 @@ function ResultsView({
         )}
       >
         {activeTab === "events" ? (
-          result.events.length === 0 ? (
+          visibleEvents.length === 0 ? (
             <p className="text-center text-sm text-on-surface-variant py-8">No events</p>
           ) : (
-            result.events.map((ev) => (
+            visibleEvents.map((ev) => (
               <EventRow key={ev.id} event={ev} startDate={startDate} />
             ))
           )
@@ -357,7 +366,15 @@ function ResultsView({
   );
 }
 
-function ComparisonView({ results, startDate }: { results: SimResult[]; startDate: string }) {
+function ComparisonView({
+  results,
+  startDate,
+  playbackDay,
+}: {
+  results: SimResult[];
+  startDate: string;
+  playbackDay: number;
+}) {
   const [a, b] = results;
 
   type NumericStatKey = keyof {
@@ -475,8 +492,8 @@ function ComparisonView({ results, startDate }: { results: SimResult[]; startDat
 
       {/* Side-by-side event/conflict views */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <ResultsView result={a} startDate={startDate} label={a.strategyName} />
-        <ResultsView result={b} startDate={startDate} label={b.strategyName} />
+        <ResultsView result={a} startDate={startDate} label={a.strategyName} playbackDay={playbackDay} />
+        <ResultsView result={b} startDate={startDate} label={b.strategyName} playbackDay={playbackDay} />
       </div>
     </div>
   );
@@ -490,8 +507,24 @@ export default function SimulationPage() {
   const [results, setResults] = useState<SimResult[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const [comparisonMode, setComparisonMode] = useState(false);
+  const [playbackDay, setPlaybackDay] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playSpeed, setPlaySpeed] = useState(1000); // ms per simulated day
 
   const scenario = ACADEMY_SCENARIO;
+
+  useEffect(() => {
+    if (!isPlaying || results.length === 0) return;
+    const maxDay = duration;
+    if (playbackDay >= maxDay) {
+      setIsPlaying(false);
+      return;
+    }
+    const timer = setTimeout(() => {
+      setPlaybackDay(prev => prev + 1);
+    }, playSpeed);
+    return () => clearTimeout(timer);
+  }, [isPlaying, playbackDay, duration, results.length, playSpeed]);
 
   function toggleStrategy(id: string) {
     setSelectedStrategies((prev) => {
@@ -512,6 +545,8 @@ export default function SimulationPage() {
       const result = runSimulation(scenario, strategy, duration);
       setResults([result]);
       setIsRunning(false);
+      setPlaybackDay(0);
+      setIsPlaying(true);
     }, 0);
   }
 
@@ -528,6 +563,8 @@ export default function SimulationPage() {
       const resultB = runSimulation(scenario, stratB, duration);
       setResults([resultA, resultB]);
       setIsRunning(false);
+      setPlaybackDay(0);
+      setIsPlaying(true);
     }, 0);
   }
 
@@ -703,6 +740,69 @@ export default function SimulationPage() {
           </div>
         </div>
 
+        {/* Playback controls */}
+        {results.length > 0 && (
+          <div className="rounded-xl border border-outline-variant bg-surface-container-lowest px-5 py-4 flex items-center gap-4">
+            {/* Play/Pause */}
+            <button
+              onClick={() => {
+                if (playbackDay >= duration) {
+                  setPlaybackDay(0);
+                  setIsPlaying(true);
+                } else {
+                  setIsPlaying(!isPlaying);
+                }
+              }}
+              className="flex h-10 w-10 items-center justify-center rounded-full aviation-gradient text-white shadow-md flex-shrink-0"
+            >
+              <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                {isPlaying ? "pause" : "play_arrow"}
+              </span>
+            </button>
+
+            {/* Progress bar + day counter */}
+            <div className="flex-1">
+              <div className="flex justify-between text-xs text-on-surface-variant mb-1">
+                <span className="font-semibold">Day {playbackDay} / {duration}</span>
+                <span>{Math.round((playbackDay / duration) * 100)}% complete</span>
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={duration}
+                value={playbackDay}
+                onChange={e => { setPlaybackDay(Number(e.target.value)); setIsPlaying(false); }}
+                className="w-full accent-orange-500"
+              />
+            </div>
+
+            {/* Speed selector */}
+            <div className="flex items-center gap-1 text-xs text-on-surface-variant flex-shrink-0">
+              <span className="material-symbols-outlined text-sm">speed</span>
+              {[{ label: "0.5×", ms: 2000 }, { label: "1×", ms: 1000 }, { label: "2×", ms: 500 }, { label: "5×", ms: 200 }].map(s => (
+                <button
+                  key={s.ms}
+                  onClick={() => setPlaySpeed(s.ms)}
+                  className={cn(
+                    "px-2 py-1 rounded font-semibold transition-colors",
+                    playSpeed === s.ms ? "bg-primary text-white" : "bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest"
+                  )}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Show all instantly */}
+            <button
+              onClick={() => { setPlaybackDay(duration); setIsPlaying(false); }}
+              className="text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-colors flex-shrink-0"
+            >
+              Show All
+            </button>
+          </div>
+        )}
+
         {/* Results */}
         {results.length > 0 && (
           <div className="rounded-2xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm">
@@ -722,9 +822,9 @@ export default function SimulationPage() {
             </div>
 
             {results.length === 1 ? (
-              <ResultsView result={results[0]} startDate={scenario.startDate} />
+              <ResultsView result={results[0]} startDate={scenario.startDate} playbackDay={playbackDay} />
             ) : (
-              <ComparisonView results={results} startDate={scenario.startDate} />
+              <ComparisonView results={results} startDate={scenario.startDate} playbackDay={playbackDay} />
             )}
           </div>
         )}

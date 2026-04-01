@@ -13,6 +13,8 @@ const STRATEGIES = [
       "Ranks students by configurable weights: time since last flight, enrollment progress, waitlist position.",
     keyMetric: "Minimizes: Avg wait time",
     default: true,
+    learnMoreUrl: "https://ocw.mit.edu/courses/6-262-discrete-stochastic-processes-spring-2011/",
+    learnMoreLabel: "MIT 6.262 — Stochastic Processes",
   },
   {
     id: "edf",
@@ -20,6 +22,8 @@ const STRATEGIES = [
     description:
       "Prioritizes students with certification deadlines approaching soonest.",
     keyMetric: "Minimizes: Deadline misses",
+    learnMoreUrl: "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+    learnMoreLabel: "MIT — Real-Time Scheduling Theory",
   },
   {
     id: "fifo",
@@ -27,6 +31,8 @@ const STRATEGIES = [
     description:
       "Students fill slots in strict waitlist order. Simple and transparent.",
     keyMetric: "Maximizes: Fairness",
+    learnMoreUrl: "https://ocw.mit.edu/courses/6-262-discrete-stochastic-processes-spring-2011/pages/course-notes/",
+    learnMoreLabel: "MIT — Queueing Theory Notes",
   },
   {
     id: "balanced_utilization",
@@ -34,6 +40,8 @@ const STRATEGIES = [
     description:
       "Spreads bookings evenly across aircraft and instructors to maximize fleet efficiency.",
     keyMetric: "Maximizes: Fleet utilization",
+    learnMoreUrl: "https://ocw.mit.edu/courses/15-763j-manufacturing-systems-analysis-spring-2011/",
+    learnMoreLabel: "MIT 15.763 — Manufacturing Systems",
   },
 ];
 
@@ -217,6 +225,16 @@ export default function SettingsPage() {
                         <span className="rounded-full bg-surface-container-high px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-on-surface-variant">
                           {strategy.keyMetric}
                         </span>
+                        <a
+                          href={strategy.learnMoreUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={e => e.stopPropagation()}
+                          className="mt-2 text-[10px] text-primary/70 hover:text-primary flex items-center gap-0.5 transition-colors"
+                        >
+                          <span className="material-symbols-outlined text-xs">open_in_new</span>
+                          {strategy.learnMoreLabel}
+                        </a>
                       </button>
                     );
                   })}
@@ -227,54 +245,127 @@ export default function SettingsPage() {
                 </p>
               </section>
 
-              {/* Priority Weighting */}
-              <section className="rounded-xl bg-surface-container-lowest p-8 shadow-none">
-                <div className="mb-8 flex items-center gap-3">
-                  <span className="material-symbols-outlined text-primary">low_priority</span>
-                  <h4 className="text-xl font-bold font-headline">Priority Weighting</h4>
-                </div>
-                <div className="space-y-10">
-                  {WEIGHT_SLIDERS.map((slider) => {
-                    const value = Math.round((config.priority_weights[slider.key] ?? 0) * 100);
-                    return (
-                      <div key={slider.key} className="group">
-                        <div className="mb-4 flex items-center justify-between">
-                          <label className="text-sm font-bold tracking-wide text-on-surface">
-                            {slider.label}
-                          </label>
-                          <span
-                            className={cn(
-                              "rounded-full px-3 py-1 text-xs font-bold",
-                              slider.badgeClass
-                            )}
-                          >
-                            {value}% Impact
-                          </span>
+              {/* Priority Weighting — only shown for weighted_priority */}
+              {selectedStrategy === "weighted_priority" && (
+                <section className="rounded-xl bg-surface-container-lowest p-8 shadow-none">
+                  <div className="mb-8 flex items-center gap-3">
+                    <span className="material-symbols-outlined text-primary">low_priority</span>
+                    <h4 className="text-xl font-bold font-headline">Priority Weighting</h4>
+                  </div>
+                  <div className="space-y-10">
+                    {WEIGHT_SLIDERS.map((slider) => {
+                      const value = Math.round((config.priority_weights[slider.key] ?? 0) * 100);
+                      return (
+                        <div key={slider.key} className="group">
+                          <div className="mb-4 flex items-center justify-between">
+                            <label className="text-sm font-bold tracking-wide text-on-surface">
+                              {slider.label}
+                            </label>
+                            <span
+                              className={cn(
+                                "rounded-full px-3 py-1 text-xs font-bold",
+                                slider.badgeClass
+                              )}
+                            >
+                              {value}% Impact
+                            </span>
+                          </div>
+                          <input
+                            type="range"
+                            min={0}
+                            max={100}
+                            value={value}
+                            onChange={(e) =>
+                              setConfig({
+                                ...config,
+                                priority_weights: {
+                                  ...config.priority_weights,
+                                  [slider.key]: parseInt(e.target.value) / 100,
+                                },
+                              })
+                            }
+                            className="w-full"
+                          />
+                          <p className="mt-2 text-xs italic text-on-surface-variant">
+                            {slider.description}
+                          </p>
                         </div>
-                        <input
-                          type="range"
-                          min={0}
-                          max={100}
-                          value={value}
-                          onChange={(e) =>
-                            setConfig({
-                              ...config,
-                              priority_weights: {
-                                ...config.priority_weights,
-                                [slider.key]: parseInt(e.target.value) / 100,
-                              },
-                            })
-                          }
-                          className="w-full"
-                        />
-                        <p className="mt-2 text-xs italic text-on-surface-variant">
-                          {slider.description}
-                        </p>
+                      );
+                    })}
+                  </div>
+                </section>
+              )}
+
+              {/* Strategy-specific config — shown for all other strategies */}
+              {selectedStrategy !== "weighted_priority" && (
+                <section className="rounded-xl bg-surface-container-lowest p-8 shadow-none">
+                  <div className="mb-6 flex items-center gap-3">
+                    <span className="material-symbols-outlined text-primary">tune</span>
+                    <h4 className="text-xl font-bold font-headline">
+                      {selectedStrategy === "edf" && "Deadline Configuration"}
+                      {selectedStrategy === "fifo" && "Queue Configuration"}
+                      {selectedStrategy === "balanced_utilization" && "Utilization Targets"}
+                    </h4>
+                  </div>
+
+                  {selectedStrategy === "edf" && (
+                    <div className="space-y-6">
+                      <p className="text-sm text-on-surface-variant">EDF prioritizes students whose certification deadlines are approaching soonest. Configure deadline thresholds below.</p>
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-sm font-bold tracking-wide">CRITICAL DEADLINE WINDOW</label>
+                          <div className="relative">
+                            <input type="number" defaultValue={3} className="w-full rounded-lg border-none bg-surface p-4 text-xl font-bold font-headline focus:ring-2 focus:ring-primary" />
+                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant font-medium">Days</span>
+                          </div>
+                          <p className="text-xs text-on-surface-variant">Students within this window get top priority.</p>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-bold tracking-wide">WARNING WINDOW</label>
+                          <div className="relative">
+                            <input type="number" defaultValue={7} className="w-full rounded-lg border-none bg-surface p-4 text-xl font-bold font-headline focus:ring-2 focus:ring-primary" />
+                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant font-medium">Days</span>
+                          </div>
+                          <p className="text-xs text-on-surface-variant">Students within this window are elevated in priority.</p>
+                        </div>
                       </div>
-                    );
-                  })}
-                </div>
-              </section>
+                    </div>
+                  )}
+
+                  {selectedStrategy === "fifo" && (
+                    <div className="space-y-4">
+                      <p className="text-sm text-on-surface-variant">FIFO assigns slots in strict waitlist order. There are no configurable weights — the only parameter is the maximum number of slots to fill per scheduling pass.</p>
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold tracking-wide">MAX FILLS PER PASS</label>
+                        <div className="relative max-w-xs">
+                          <input type="number" defaultValue={5} className="w-full rounded-lg border-none bg-surface p-4 text-xl font-bold font-headline focus:ring-2 focus:ring-primary" />
+                          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant font-medium">Students</span>
+                        </div>
+                        <p className="text-xs text-on-surface-variant">How many waitlisted students to schedule per cron cycle.</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedStrategy === "balanced_utilization" && (
+                    <div className="space-y-8">
+                      <p className="text-sm text-on-surface-variant">Balanced Utilization spreads bookings evenly across aircraft and instructors. Configure your target utilization rates below.</p>
+                      {[
+                        { key: "aircraft", label: "AIRCRAFT UTILIZATION TARGET", description: "Target daily utilization per aircraft.", default: 75 },
+                        { key: "instructor", label: "INSTRUCTOR UTILIZATION TARGET", description: "Target daily utilization per instructor.", default: 80 },
+                      ].map(item => (
+                        <div key={item.key}>
+                          <div className="mb-3 flex items-center justify-between">
+                            <label className="text-sm font-bold tracking-wide">{item.label}</label>
+                            <span className="rounded-full px-3 py-1 text-xs font-bold bg-secondary-container text-on-secondary-container">{item.default}%</span>
+                          </div>
+                          <input type="range" min={50} max={100} defaultValue={item.default} className="w-full" />
+                          <p className="mt-2 text-xs italic text-on-surface-variant">{item.description}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </section>
+              )}
 
               {/* Search Windows */}
               <section className="rounded-xl bg-surface-container-lowest p-8 shadow-none">
