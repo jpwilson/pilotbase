@@ -34,7 +34,7 @@ export function Sidebar() {
     .join("");
 
   return (
-    <aside className="relative fixed left-0 top-0 flex h-screen w-64 flex-col bg-slate-900 p-4 z-50">
+    <aside className="fixed left-0 top-0 flex h-screen w-64 flex-col bg-slate-900 p-4 z-50">
       <div className="mb-10 flex items-center gap-3 px-2">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg aviation-gradient shadow-lg">
           <span
@@ -85,7 +85,7 @@ export function Sidebar() {
       <div className="mt-auto border-t border-slate-700 pt-6">
         {/* Profile panel */}
         {profileOpen && (
-          <div className="absolute bottom-20 left-4 right-4 rounded-2xl bg-surface-container-lowest border border-outline-variant shadow-2xl z-50 overflow-hidden">
+          <div className="fixed bottom-24 left-4 w-56 rounded-2xl bg-surface-container-lowest border border-outline-variant shadow-2xl z-[100] overflow-hidden">
             <div className="aviation-gradient p-4">
               <div className="flex items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 font-bold text-white text-lg font-headline">
