@@ -39,3 +39,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 jp_gauntlet_proj_basics.md
+.claude/worktrees/
+.claire/
