@@ -45,6 +45,19 @@ const FLAG_LABELS: Record<string, string> = {
   nextLesson: "Schedule Next Lesson",
 };
 
+const DEMO_CONFIG: OperatorConfig = {
+  priority_weights: {
+    timeSinceLastFlight: 0.3,
+    timeUntilNextFlight: 0.2,
+    totalFlightHours: 0.1,
+    enrollmentProgress: 0.2,
+    waitlistPosition: 0.2,
+  },
+  search_window_days: 7,
+  max_alternatives: 5,
+  feature_flags: { waitlist: true, reschedule: true, discovery: true, nextLesson: true },
+};
+
 export default function SettingsPage() {
   const [config, setConfig] = useState<OperatorConfig | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -56,7 +69,9 @@ export default function SettingsPage() {
       try {
         const res = await fetch("/api/settings");
         const { data } = await res.json();
-        setConfig(data);
+        setConfig(data ?? DEMO_CONFIG);
+      } catch {
+        setConfig(DEMO_CONFIG);
       } finally {
         setIsLoading(false);
       }
