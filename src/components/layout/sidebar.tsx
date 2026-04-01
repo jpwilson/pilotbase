@@ -8,6 +8,7 @@ const navItems = [
   { href: "/queue", label: "Approval Queue", icon: "pending_actions" },
   { href: "/activity", label: "Activity Feed", icon: "rss_feed" },
   { href: "/students", label: "Students", icon: "group" },
+  { href: "/simulation", label: "Simulation", icon: "science" },
   { href: "/settings", label: "Settings", icon: "settings" },
 ];
 
