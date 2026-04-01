@@ -4,6 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "PilotBase — Flight School Scheduling",
   description: "Automated scheduling optimization for flight schools",
+  icons: { icon: "/icon.png", apple: "/icon.png" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
