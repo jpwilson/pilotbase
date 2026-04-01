@@ -104,26 +104,39 @@ export function TourGuide() {
     }
   };
 
+  const handleFloatingButtonClick = () => {
+    if (isOpen) {
+      setIsOpen(false);
+    } else {
+      setIsOpen(true);
+    }
+  };
+
   return (
     <>
-      {/* Floating Agent Button */}
-      {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full aviation-gradient text-white shadow-2xl transition-all hover:scale-105 active:scale-95"
+      {/* Floating Agent Button — always visible */}
+      <button
+        onClick={handleFloatingButtonClick}
+        className={cn(
+          "fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full aviation-gradient text-white shadow-2xl transition-all hover:scale-105 active:scale-95",
+          isOpen && "opacity-70"
+        )}
+      >
+        <span
+          className="material-symbols-outlined text-3xl"
+          style={{ fontVariationSettings: "'FILL' 1" }}
         >
-          <span
-            className="material-symbols-outlined text-3xl"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            assistant
-          </span>
-        </button>
-      )}
+          assistant
+        </span>
+        {/* Pulsing orange dot when tour is active and panel is closed */}
+        {isTourActive && !isOpen && (
+          <span className="absolute -top-1 -right-1 h-3.5 w-3.5 rounded-full bg-orange-400 border-2 border-white animate-pulse" />
+        )}
+      </button>
 
       {/* Panel */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-96 overflow-hidden rounded-2xl border border-outline-variant/10 bg-surface-container-lowest shadow-2xl">
+        <div className="fixed bottom-24 right-6 z-50 w-96 overflow-hidden rounded-2xl border border-outline-variant/10 bg-surface-container-lowest shadow-2xl">
           {/* Header */}
           <div className="flex items-center justify-between aviation-gradient px-5 py-4">
             <div className="flex items-center gap-3">
@@ -142,6 +155,7 @@ export function TourGuide() {
                 </p>
               </div>
             </div>
+            {/* X only closes the panel — tour state is preserved */}
             <button
               onClick={() => setIsOpen(false)}
               className="text-white/80 hover:text-white transition-colors"
@@ -198,6 +212,14 @@ export function TourGuide() {
                   {isLastStep ? "Finish Tour" : "Next"}
                 </button>
               </div>
+
+              {/* End tour link */}
+              <button
+                onClick={() => { setIsTourActive(false); }}
+                className="w-full text-center text-xs text-on-surface-variant/60 hover:text-on-surface-variant mt-2 transition-colors"
+              >
+                End tour
+              </button>
             </div>
           ) : (
             /* Agent menu */

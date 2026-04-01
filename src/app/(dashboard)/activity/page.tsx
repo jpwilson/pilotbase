@@ -61,6 +61,15 @@ const EVENT_CONFIG: Record<
   },
 };
 
+const FILTER_OPTIONS = [
+  { value: "all", label: "All Events" },
+  { value: "suggestion_created", label: "Suggestions Created" },
+  { value: "suggestion_approved", label: "Suggestions Approved" },
+  { value: "suggestion_declined", label: "Suggestions Declined" },
+  { value: "reservation_created", label: "Reservations Created" },
+  { value: "notification_sent", label: "Notifications Sent" },
+];
+
 function groupByDate(events: AuditLogEntry[]): { label: string; entries: AuditLogEntry[] }[] {
   const today = new Date();
   const yesterday = new Date(today);
@@ -82,9 +91,32 @@ function groupByDate(events: AuditLogEntry[]): { label: string; entries: AuditLo
   return Object.entries(groups).map(([label, entries]) => ({ label, entries }));
 }
 
+function exportAsCSV(events: AuditLogEntry[]) {
+  const rows = [
+    ["ID", "Event Type", "Entity", "Actor", "Timestamp"],
+    ...events.map((e) => [
+      e.id,
+      e.event_type,
+      e.entity_type || "",
+      e.actor_type || "",
+      new Date(e.created_at).toISOString(),
+    ]),
+  ];
+  const csv = rows.map((r) => r.join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "pilotbase-activity.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function ActivityPage() {
   const [events, setEvents] = useState<AuditLogEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<string>("all");
 
   useEffect(() => {
     async function fetchActivity() {
@@ -102,7 +134,9 @@ export default function ActivityPage() {
     fetchActivity();
   }, []);
 
-  const dateGroups = groupByDate(events);
+  const filteredEvents =
+    activeFilter === "all" ? events : events.filter((e) => e.event_type === activeFilter);
+  const dateGroups = groupByDate(filteredEvents);
 
   return (
     <div>
@@ -119,11 +153,58 @@ export default function ActivityPage() {
             </p>
           </div>
           <div className="flex gap-3">
-            <button className="flex items-center gap-2 rounded-md bg-surface-container-high px-4 py-2 text-sm font-medium text-on-surface transition-all hover:bg-surface-container-highest">
-              <span className="material-symbols-outlined text-sm">filter_list</span>
-              Filter
-            </button>
-            <button className="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-bold text-white shadow-lg shadow-primary/20 aviation-gradient transition-all hover:opacity-90">
+            <div className="relative">
+              <button
+                onClick={() => setFilterOpen((f) => !f)}
+                className={cn(
+                  "flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-all",
+                  activeFilter !== "all"
+                    ? "bg-primary text-white"
+                    : "bg-surface-container-high text-on-surface hover:bg-surface-container-highest"
+                )}
+              >
+                <span className="material-symbols-outlined text-sm">filter_list</span>
+                Filter
+                {activeFilter !== "all" && (
+                  <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                )}
+              </button>
+
+              {filterOpen && (
+                <div className="absolute right-0 top-full mt-2 w-56 rounded-xl bg-surface-container-lowest border border-outline-variant shadow-xl z-40 overflow-hidden">
+                  {FILTER_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => {
+                        setActiveFilter(opt.value);
+                        setFilterOpen(false);
+                      }}
+                      className={cn(
+                        "w-full text-left px-4 py-3 text-sm transition-colors flex items-center justify-between",
+                        activeFilter === opt.value
+                          ? "bg-primary-fixed/20 text-primary font-semibold"
+                          : "text-on-surface hover:bg-surface-container-low"
+                      )}
+                    >
+                      {opt.label}
+                      {activeFilter === opt.value && (
+                        <span
+                          className="material-symbols-outlined text-sm"
+                          style={{ fontVariationSettings: "'FILL' 1" }}
+                        >
+                          check
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={() => exportAsCSV(filteredEvents)}
+              className="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-bold text-white shadow-lg shadow-primary/20 aviation-gradient transition-all hover:opacity-90"
+            >
               <span className="material-symbols-outlined text-sm">download</span>
               Export Log
             </button>
@@ -134,7 +215,7 @@ export default function ActivityPage() {
           <div className="flex items-center justify-center py-24">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
           </div>
-        ) : events.length === 0 ? (
+        ) : filteredEvents.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-outline-variant/50 p-16 text-center">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-surface-container-low shadow-sm">
               <span className="material-symbols-outlined text-outline">rss_feed</span>
@@ -213,7 +294,8 @@ export default function ActivityPage() {
                               {event.actor_id
                                 ? event.actor_id
                                 : event.actor_type
-                                  ? event.actor_type.charAt(0).toUpperCase() + event.actor_type.slice(1)
+                                  ? event.actor_type.charAt(0).toUpperCase() +
+                                    event.actor_type.slice(1)
                                   : "System"}
                             </p>
                           </div>

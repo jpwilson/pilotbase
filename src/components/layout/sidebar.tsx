@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
@@ -14,6 +15,8 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [profileOpen, setProfileOpen] = useState(false);
+
   const currentRole =
     typeof window !== "undefined"
       ? (document.cookie
@@ -25,8 +28,13 @@ export function Sidebar() {
   const displayName = currentRole === "student" ? "Alex Rivera" : "Capt. Miller";
   const displayRole = currentRole === "student" ? "PPL Student" : "Chief Instructor";
 
+  const initials = displayName
+    .split(" ")
+    .map((n) => n[0])
+    .join("");
+
   return (
-    <aside className="fixed left-0 top-0 flex h-screen w-64 flex-col bg-slate-900 p-4 z-50">
+    <aside className="relative fixed left-0 top-0 flex h-screen w-64 flex-col bg-slate-900 p-4 z-50">
       <div className="mb-10 flex items-center gap-3 px-2">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg aviation-gradient shadow-lg">
           <span
@@ -75,12 +83,72 @@ export function Sidebar() {
       </nav>
 
       <div className="mt-auto border-t border-slate-700 pt-6">
-        <div className="flex items-center gap-3 px-2">
+        {/* Profile panel */}
+        {profileOpen && (
+          <div className="absolute bottom-20 left-4 right-4 rounded-2xl bg-surface-container-lowest border border-outline-variant shadow-2xl z-50 overflow-hidden">
+            <div className="aviation-gradient p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 font-bold text-white text-lg font-headline">
+                  {initials}
+                </div>
+                <div>
+                  <p className="font-bold text-white">{displayName}</p>
+                  <p className="text-xs text-white/70">{displayRole}</p>
+                </div>
+              </div>
+            </div>
+            <div className="p-4 space-y-3">
+              <div className="space-y-1">
+                <p className="text-[10px] uppercase tracking-widest text-slate-400">Operator</p>
+                <p className="text-sm font-medium text-white">Central Valley Flight Academy</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] uppercase tracking-widest text-slate-400">Email</p>
+                <p className="text-sm font-medium text-white">capt.miller@pilotbase.demo</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] uppercase tracking-widest text-slate-400">Role</p>
+                <p className="text-sm font-medium text-white">Admin — Full Access</p>
+              </div>
+              <div className="border-t border-slate-700 pt-3 space-y-1">
+                <button
+                  onClick={() => {
+                    document.cookie =
+                      "demo_role=student; path=/; max-age=" + 60 * 60 * 24 * 30;
+                    window.location.reload();
+                  }}
+                  className="w-full text-left text-sm text-slate-300 hover:text-white transition-colors py-1 flex items-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-sm">swap_horiz</span>
+                  Switch to Student View
+                </button>
+                <button
+                  onClick={() => {
+                    document.cookie = "demo_role=; path=/; max-age=0";
+                    window.location.href = "/login";
+                  }}
+                  className="w-full text-left text-sm text-slate-300 hover:text-red-400 transition-colors py-1 flex items-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-sm">logout</span>
+                  Sign Out
+                </button>
+              </div>
+            </div>
+            <button
+              onClick={() => setProfileOpen(false)}
+              className="absolute top-3 right-3 text-white/60 hover:text-white transition-colors"
+            >
+              <span className="material-symbols-outlined text-lg">close</span>
+            </button>
+          </div>
+        )}
+
+        <div
+          className="flex items-center gap-3 px-2 cursor-pointer hover:bg-slate-800 rounded-lg py-2 transition-colors"
+          onClick={() => setProfileOpen((p) => !p)}
+        >
           <div className="flex h-10 w-10 items-center justify-center rounded-full aviation-gradient font-headline font-bold text-sm text-white shadow-md">
-            {displayName
-              .split(" ")
-              .map((n) => n[0])
-              .join("")}
+            {initials}
           </div>
           <div className="overflow-hidden">
             <p className="truncate text-sm font-bold text-white">{displayName}</p>
