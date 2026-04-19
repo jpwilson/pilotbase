@@ -2,7 +2,9 @@
 
 AI-powered scheduling automation for flight schools. PilotBase watches your Flight Schedule Pro (FSP) calendar, generates smart scheduling suggestions, and lets your team approve or decline them before anything executes.
 
-**Live app:** [pilotbase-3ce7knm2v-jpwilsons-projects.vercel.app](https://pilotbase-3ce7knm2v-jpwilsons-projects.vercel.app)
+**Live app:** [pilotbase.46-225-235-124.sslip.io](https://pilotbase.46-225-235-124.sslip.io)
+
+> _Hosted on [Hetzner Cloud](https://www.hetzner.com/cloud) (ARM CAX21, Nuremberg) via [Coolify](https://coolify.io), with self-hosted Supabase on the same box. Migrated off Vercel + Supabase Cloud (prior URL: `pilotbase-pink.vercel.app`) to cut demo hosting costs._
 
 ---
 
